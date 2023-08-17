@@ -1,4 +1,7 @@
 const router = require('express').Router();
+const Storage = require('../db/storage');
+
+const storage = new Storage('db/db.json');
 
 router.get('/notes', (req, res) => {
     storage.getNotes().then((notes) => {
@@ -8,7 +11,8 @@ router.get('/notes', (req, res) => {
 
 router.post('/notes', (req, res) => {
     const newNote = req.body;
-    storage.saveNote(newNote)
+    console.log("NEW NOTE", newNote);
+    storage.addNote(newNote)
         .then(() => {
             res.status(201).json({ message: 'Note created successfully' });
         })

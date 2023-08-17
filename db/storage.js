@@ -1,15 +1,21 @@
 const fs = require('fs');
 const util = require('util');
-const uuid = require('uuid/v1');
+const { v1: uuidv1 } = require('uuid');
 const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 class Storage {
-    read() {
-        return readFileAsync('db/db.json', 'utf8');
+    constructor(filePath) {
+        this.filePath = filePath;
     }
+
+    read() {
+        return readFileAsync(this.filePath, 'utf8');
+    }
+
     write(data) {
         return writeFileAsync(this.filePath, JSON.stringify(data));
     }
+
     getNotes() {
         return this.read().then((notesData) => {
             try {
@@ -19,10 +25,13 @@ class Storage {
             }
         });
     }
-    addNote(title, text) {
+
+    addNote({ title, text }) {
+        console.log("TITLE", title);
+        console.log("TEXT", text);
         return this.getNotes().then((notes) => {
             const newNote = {
-                id: uuid(),
+                id: uuidv1(),
                 title,
                 text,
             };
@@ -31,5 +40,8 @@ class Storage {
         });
     }
 }
+
+
+
 
 module.exports = Storage;
