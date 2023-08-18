@@ -3,6 +3,7 @@ const util = require('util');
 const { v1: uuidv1 } = require('uuid');
 const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
+
 class Storage {
     constructor(filePath) {
         this.filePath = filePath;
@@ -39,9 +40,13 @@ class Storage {
             return this.write(notes).then(() => newNote);
         });
     }
+
+    deleteNote(noteId) {
+        return this.getNotes().then((notes) => {
+            const updatedNotes = notes.filter((note) => note.id !== noteId);
+            return this.write(updatedNotes);
+        });
+    }
 }
-
-
-
 
 module.exports = Storage;
